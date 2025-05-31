@@ -19,7 +19,7 @@
 }
 
 - (void)setupAudioPlayerViews {
-    NSArray<NSString *> *soundFileNames = @[@"clap.mp3", @"flying_noise.mp3", @"game_over.mp3", @"hihat_closed.mp3", @"hihat_open.mp3", @"kick.mp3", @"snare.mp3"];
+    NSArray<NSString *> *soundFileNames = @[@"flying_noise.mp3", @"game_over.mp3", @"clap.mp3", @"snare.mp3", @"hihat_closed.mp3", @"hihat_open.mp3", @"kick.mp3"];
 
     CGFloat viewWidth = self.frame.size.width;
     NSUInteger numberOfPlayers = soundFileNames.count;

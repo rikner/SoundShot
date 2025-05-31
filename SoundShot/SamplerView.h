@@ -10,7 +10,4 @@
 
 @interface SamplerView : NSView
 
-
-//- (void)toggleAudioPlayback;
-
 @end
