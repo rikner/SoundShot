@@ -6,9 +6,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "AudioPlayerView.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
+@property (strong, nonatomic) NSWindow *window;
 
 @end
+
 
