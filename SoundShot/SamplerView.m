@@ -4,7 +4,7 @@
 //
 //  Created by Erik Werner on 31.05.25.
 //
-// ...existing code...
+
 #import "SamplerView.h"
 #import "AudioPlayerView.h"
 
@@ -24,7 +24,7 @@
     CGFloat viewWidth = self.frame.size.width;
     NSUInteger numberOfPlayers = soundFileNames.count;
     if (numberOfPlayers == 0) {
-        return; // No players to create
+        return;
     }
 
     CGFloat playerHeight = self.frame.size.height / numberOfPlayers;
