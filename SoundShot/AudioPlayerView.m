@@ -19,8 +19,8 @@
     self.wantsLayer = YES;
     self.layer.backgroundColor = self.idleBackgroundColor.CGColor;
     
-     self.layer.borderColor = [NSColor lightGrayColor].CGColor;
-     self.layer.borderWidth = 1.0;
+    self.layer.borderColor = [NSColor appLavenderWebColor].CGColor;
+    self.layer.borderWidth = 2.0;
     
     return self;
 }
@@ -39,7 +39,11 @@
 }
 
 - (void)setupPlayButton {
-    self.playButton = [[NSButton alloc] initWithFrame:NSMakeRect(0, 0, 100, 40)];
+    CGFloat height = 60;
+    CGFloat width = 120;
+    CGFloat x = self.frame.size.width / 2 - width / 2;
+    CGFloat y = self.frame.size.height / 2 - height / 2;
+    self.playButton = [[NSButton alloc] initWithFrame:NSMakeRect(x, y, width, height)];
     self.playButton.title = @"Play";
     self.playButton.target = self;
     self.playButton.action = @selector(toggleAudioPlayback);
