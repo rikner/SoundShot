@@ -3,6 +3,7 @@
 #import <AVFoundation/AVFoundation.h>
 
 #import "AudioPlayerView.h"
+#import "NSColor+AppColors.h"
 
 @implementation AudioPlayerView
 
@@ -12,8 +13,8 @@
         [self setupAudioPlayerWithURL:soundURL];
         [self setupPlayButton];
     }
-    self.playingBackgroundColor = [NSColor redColor];
-    self.idleBackgroundColor = [NSColor darkGrayColor];
+    self.playingBackgroundColor = [NSColor appVermilionColor];
+    self.idleBackgroundColor = [NSColor appGunmetalColor];
 
     self.wantsLayer = YES;
     self.layer.backgroundColor = self.idleBackgroundColor.CGColor;
@@ -67,7 +68,6 @@
     [self.layer addAnimation:animation forKey:@"backgroundColorAnimation"];
 }
 
-// Delegate method to reset button when audio finishes
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
     self.playButton.title = @"Play";
     [self animateBackgroundColorTo:self.idleBackgroundColor];
