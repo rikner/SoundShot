@@ -7,10 +7,14 @@
 
 #import <Cocoa/Cocoa.h>
 #import "AudioPlayerView.h"
+#import "MIDIReceiver.h"
+#import "AudioPlayer.h"
 
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, MIDIReceiverDelegate>
 
 @property (strong, nonatomic) NSWindow *window;
+@property (strong, nonatomic) MIDIReceiver *midiReceiver;
+@property (strong, nonatomic) AudioPlayer *audioPlayer;
 
 @end
 

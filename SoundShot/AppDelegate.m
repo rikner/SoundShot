@@ -7,6 +7,7 @@
 
 #import "AppDelegate.h"
 #import "SamplerView.h"
+#import "MIDIReceiver.h"
 
 
 @implementation AppDelegate
@@ -23,6 +24,14 @@
     
     SamplerView *samplerView = [[SamplerView alloc] initWithFrame:contentRect];
     [self.window.contentView addSubview:samplerView];
+    
+    
+    self.midiReceiver = [[MIDIReceiver alloc] init];
+    self.midiReceiver.delegate = self;
+    
+    self.audioPlayer = [[AudioPlayer alloc] init];
+    
+    [self.midiReceiver startListening];
 
     [self.window makeKeyAndOrderFront:nil];
 }
@@ -30,6 +39,45 @@
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     // Insert code here to tear down your application
+}
+
+- (void)midiReceiver:(MIDIReceiver *)receiver didReceiveNoteOn:(Byte)note velocity:(Byte)velocity channel:(Byte)channel {
+    if (note < 36 || note > 71) {
+        return;
+    }
+
+int noteInOctave = note % 12;
+    SoundSampleType sampleToPlay = -1;
+
+    switch (noteInOctave) {
+        case 0:  // C
+            sampleToPlay = SoundSampleTypeKick;
+            break;
+        case 2:  // D
+            sampleToPlay = SoundSampleTypeClap;
+            break;
+        case 4:  // E
+            sampleToPlay = SoundSampleTypeSnare;
+            break;
+        case 5:  // F
+            sampleToPlay = SoundSampleTypeHiHatClosed;
+            break;
+        case 7:  // G
+            sampleToPlay = SoundSampleTypeHiHatOpen;
+            break;
+        case 9:  // A
+            sampleToPlay = SoundSampleTypeFlyingNoise;
+            break;
+        case 11: // B
+            sampleToPlay = SoundSampleTypeGameOver;
+            break;
+        default:
+            return;
+    }
+
+    if (sampleToPlay >= 0 && sampleToPlay < SoundSampleTypeCount) {
+        [self.audioPlayer playSample:sampleToPlay];
+    }
 }
 
 
