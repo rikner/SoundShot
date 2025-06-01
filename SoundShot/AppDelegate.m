@@ -6,7 +6,7 @@
 //
 
 #import "AppDelegate.h"
-#import "SamplerView.h"
+#import "DeckView.h"
 #import "MIDIReceiver.h"
 
 
@@ -22,9 +22,8 @@
     
     [self.window setTitle:@"SoundShot"];
     
-    SamplerView *samplerView = [[SamplerView alloc] initWithFrame:contentRect];
-    [self.window.contentView addSubview:samplerView];
-    
+    DeckView *soundPadDeck = [[DeckView alloc] initWithFrame:contentRect numberOfPads:SoundSampleTypeCount];
+    [self.window.contentView addSubview:soundPadDeck];
     
     self.midiReceiver = [[MIDIReceiver alloc] init];
     self.midiReceiver.delegate = self;

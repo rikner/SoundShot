@@ -1,16 +1,14 @@
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
-#import <AVFoundation/AVFoundation.h>
 
-#import "AudioPlayerView.h"
+#import "SoundPadView.h"
 #import "NSColor+AppColors.h"
 
-@implementation AudioPlayerView
+@implementation SoundPadView
 
-- (instancetype)initWithFrame:(NSRect)frame soundURL:(NSURL *)soundURL {
+- (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setupAudioPlayerWithURL:soundURL];
         [self setupPlayButton];
     }
     self.playingBackgroundColor = [NSColor appVermilionColor];
@@ -25,18 +23,6 @@
     return self;
 }
 
-- (void)setupAudioPlayerWithURL:(NSURL *)soundURL {
-    NSError *error;
-    if (soundURL) {
-        self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:soundURL error:&error];
-        self.audioPlayer.delegate = self; // Set delegate
-        if (error) {
-            NSLog(@"Error loading audio: %@ from URL: %@", error.localizedDescription, soundURL);
-        }
-    } else {
-        NSLog(@"Error: soundURL is nil.");
-    }
-}
 
 - (void)setupPlayButton {
     CGFloat height = 60;
@@ -46,21 +32,10 @@
     self.playButton = [[NSButton alloc] initWithFrame:NSMakeRect(x, y, width, height)];
     self.playButton.title = @"Play";
     self.playButton.target = self;
-    self.playButton.action = @selector(toggleAudioPlayback);
-    [self addSubview:self.playButton];
+//    self.playButton.action = @selector(toggleAudioPlayback);
+//    [self addSubview:self.playButton];
 }
 
-- (void)toggleAudioPlayback {
-    if (self.audioPlayer.isPlaying) {
-        [self.audioPlayer stop];
-        self.playButton.title = @"Play";
-        [self animateBackgroundColorTo:self.idleBackgroundColor];
-    } else {
-        [self.audioPlayer play];
-        self.playButton.title = @"Stop";
-        [self animateBackgroundColorTo:self.playingBackgroundColor];
-    }
-}
 
 - (void) animateBackgroundColorTo:(NSColor *)toColor {
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
@@ -72,9 +47,14 @@
     [self.layer addAnimation:animation forKey:@"backgroundColorAnimation"];
 }
 
-- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
-    self.playButton.title = @"Play";
-    [self animateBackgroundColorTo:self.idleBackgroundColor];
+ - (void) setIsPlaying: (BOOL)isPlaying {
+    if (isPlaying == TRUE) {
+        self.playButton.title = @"Stop";
+        [self animateBackgroundColorTo: self.playingBackgroundColor];
+    } else {
+        self.playButton.title = @"Play";
+        [self animateBackgroundColorTo: self.idleBackgroundColor];
+    }
 }
 
 @end

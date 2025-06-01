@@ -129,9 +129,17 @@
 
     [playerNode stop]; 
     
-    [playerNode scheduleBuffer:bufferToPlay atTime:nil options:AVAudioPlayerNodeBufferInterrupts completionHandler:nil];
+    [playerNode scheduleBuffer:bufferToPlay
+                        atTime:nil
+                       options:AVAudioPlayerNodeBufferInterrupts
+             completionHandler:nil
+    ];
     
     [playerNode play];
+}
+
+- (void) finishedPlaying {
+    
 }
 
 - (void)dealloc {

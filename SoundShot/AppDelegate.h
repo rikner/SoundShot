@@ -6,7 +6,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "AudioPlayerView.h"
+#import "SoundPadView.h"
 #import "MIDIReceiver.h"
 #import "AudioPlayer.h"
 
