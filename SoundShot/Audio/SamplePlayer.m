@@ -1,13 +1,13 @@
 //
-//  AudioPlayer.m
+//  SamplePlayer.m
 //  SoundShot
 //
 //  Created by Erik Werner on 31.05.25.
 //
 
-#import "AudioPlayer.h"
+#import "SamplePlayer.h"
 
-@interface AudioPlayer ()
+@interface SamplePlayer ()
 
 @property (nonatomic, strong) AVAudioEngine *engine;
 @property (nonatomic, strong) AVAudioMixerNode *mainMixerNode;
@@ -18,7 +18,7 @@
 @end
 
 
-@implementation AudioPlayer
+@implementation SamplePlayer
 
 - (instancetype)init {
     self = [super init];
@@ -115,7 +115,7 @@
     }
 }
 
-- (void)playSample:(SoundSampleType)sampleType {
+- (void)play:(SoundSampleType)sampleType {
     AVAudioPCMBuffer *bufferToPlay = self.soundBuffers[@(sampleType)];
     if (!bufferToPlay) {
         NSLog(@"AudioPlayer: Sound buffer not found for type %ld", (long)sampleType);
@@ -131,16 +131,16 @@
     [playerNode stop]; 
     
 
-    if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayer:didStartPlayingSample:)]) {
-        [self.delegate audioPlayer:self didStartPlayingSample:sampleType];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(samplePlayer:didStartPlayingSample:)]) {
+        [self.delegate samplePlayer:self didStartPlayingSample:sampleType];
     }
 
     [playerNode scheduleBuffer:bufferToPlay
                         atTime:nil
                        options:AVAudioPlayerNodeBufferInterrupts
              completionHandler:^{
-                    if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayer:didFinishPlayingSample:)]) {
-                        [self.delegate audioPlayer:self didFinishPlayingSample:sampleType];
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(samplePlayer:didFinishPlayingSample:)]) {
+                        [self.delegate samplePlayer:self didFinishPlayingSample:sampleType];
                     }
                 }
     ];

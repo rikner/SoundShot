@@ -10,6 +10,9 @@
 #import "MIDIReceiver.h"
 #import <dispatch/dispatch.h>
 
+@interface AppDelegate ()
+@property (strong, nonatomic) DeckView *deckView;
+@end
 
 @implementation AppDelegate
 
@@ -26,8 +29,8 @@
     self.deckView = [[DeckView alloc] initWithFrame:contentRect];
     [self.window.contentView addSubview:self.deckView];
 
-    self.audioPlayer = [[AudioPlayer alloc] init];
-    self.audioPlayer.delegate = self;
+    self.samplePlayer = [[SamplePlayer alloc] init];
+    self.samplePlayer.delegate = self;
     
     self.midiReceiver = [[MIDIReceiver alloc] init];
     self.midiReceiver.delegate = self;
@@ -41,13 +44,13 @@
     // Insert code here to tear down your application
 }
 
-- (void)audioPlayer:(AudioPlayer *)player didStartPlayingSample:(SoundSampleType)sampleType {
+- (void)samplePlayer:(SamplePlayer *)player didStartPlayingSample:(SoundSampleType)sampleType {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.deckView update:sampleType isPlaying: YES];
     });
 }
 
-- (void)audioPlayer:(AudioPlayer *)player didFinishPlayingSample:(SoundSampleType)sampleType {
+- (void)samplePlayer:(SamplePlayer *)player didFinishPlayingSample:(SoundSampleType)sampleType {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.deckView update:sampleType isPlaying: NO];
     });
@@ -88,7 +91,7 @@ int noteInOctave = note % 12;
     }
 
     if (sampleToPlay >= 0 && sampleToPlay < SoundSampleTypeCount) {
-        [self.audioPlayer playSample:sampleToPlay];
+        [self.samplePlayer play:sampleToPlay];
     }
 }
 

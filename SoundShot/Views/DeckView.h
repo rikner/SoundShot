@@ -6,7 +6,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "AudioPlayer.h"
+#import "SamplePlayer.h"
 
 @interface DeckView : NSView
 - (void) update:(SoundSampleType)sampleType isPlaying:(BOOL) isPlaying;

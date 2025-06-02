@@ -7,7 +7,7 @@
 
 #import "SoundPadView.h"
 #import "DeckView.h"
-#import "AudioPlayer.h"
+#import "SamplePlayer.h"
 
 @interface DeckView ()
 @property (nonatomic, strong) NSMutableDictionary<NSNumber *, SoundPadView *> *padViews;
