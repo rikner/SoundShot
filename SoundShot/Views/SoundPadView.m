@@ -23,7 +23,7 @@
 
 - (void) animateBackgroundColorTo:(NSColor *)toColor {
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
-    animation.duration = 0.15;
+    animation.duration = 0.1;
     animation.fromValue = (id)self.layer.backgroundColor;
     animation.toValue = toColor;
     animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
