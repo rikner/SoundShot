@@ -7,28 +7,39 @@
 
 #import "SoundPadView.h"
 #import "DeckView.h"
+#import "AudioPlayer.h"
+
+@interface DeckView ()
+@property (nonatomic, strong) NSMutableDictionary<NSNumber *, SoundPadView *> *padViews;
+@end
 
 @implementation DeckView
 
-- (instancetype) initWithFrame:(NSRect)frame numberOfPads:(NSUInteger) numberOfPads {
+- (instancetype)initWithFrame:(NSRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self setupAudioPlayerViews:numberOfPads];
+        _padViews = [NSMutableDictionary dictionary];
+        [self setupPadViews];
     }
     return self;
 }
 
-- (void)setupAudioPlayerViews:(NSUInteger)numberOfPads {
+- (void)setupPadViews {
     CGFloat viewWidth = self.frame.size.width;
-    CGFloat playerHeight = self.frame.size.height / numberOfPads;
+    CGFloat playerHeight = self.frame.size.height / SoundSampleTypeCount;
     CGFloat currentY = 0;
-
-    for (int i = 0; i < numberOfPads; i++) {
+    
+    for (int i = 0; i < SoundSampleTypeCount; ++i) {
         NSRect playerFrame = NSMakeRect(0, currentY, viewWidth, playerHeight);
-        SoundPadView *apv = [[SoundPadView alloc] initWithFrame:playerFrame];
-        [self addSubview:apv];
+        SoundPadView *spv = [[SoundPadView alloc] initWithFrame:playerFrame];
+        [self addSubview:spv];
         currentY += playerHeight;
+        self.padViews[@(i)] = spv;
     }
+}
+
+- (void)update:(SoundSampleType)sampleType isPlaying:(BOOL)isPlaying {
+    [self.padViews[@(sampleType)] setIsPlaying:isPlaying];
 }
 
 @end

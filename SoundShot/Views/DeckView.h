@@ -6,7 +6,8 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "AudioPlayer.h"
 
 @interface DeckView : NSView
-- (instancetype) initWithFrame:(NSRect)frame numberOfPads:(NSUInteger) numberOfPads;
+- (void) update:(SoundSampleType)sampleType isPlaying:(BOOL) isPlaying;
 @end
