@@ -8,6 +8,7 @@
 #import "AppDelegate.h"
 #import "DeckView.h"
 #import "MIDIReceiver.h"
+#import <dispatch/dispatch.h>
 
 
 @implementation AppDelegate
@@ -22,14 +23,14 @@
     
     [self.window setTitle:@"SoundShot"];
     
-    DeckView *soundPadDeck = [[DeckView alloc] initWithFrame:contentRect numberOfPads:SoundSampleTypeCount];
-    [self.window.contentView addSubview:soundPadDeck];
+    self.deckView = [[DeckView alloc] initWithFrame:contentRect];
+    [self.window.contentView addSubview:self.deckView];
+
+    self.audioPlayer = [[AudioPlayer alloc] init];
+    self.audioPlayer.delegate = self;
     
     self.midiReceiver = [[MIDIReceiver alloc] init];
     self.midiReceiver.delegate = self;
-    
-    self.audioPlayer = [[AudioPlayer alloc] init];
-    
     [self.midiReceiver startListening];
 
     [self.window makeKeyAndOrderFront:nil];
@@ -38,6 +39,18 @@
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     // Insert code here to tear down your application
+}
+
+- (void)audioPlayer:(AudioPlayer *)player didStartPlayingSample:(SoundSampleType)sampleType {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.deckView update:sampleType isPlaying: YES];
+    });
+}
+
+- (void)audioPlayer:(AudioPlayer *)player didFinishPlayingSample:(SoundSampleType)sampleType {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.deckView update:sampleType isPlaying: NO];
+    });
 }
 
 - (void)midiReceiver:(MIDIReceiver *)receiver didReceiveNoteOn:(Byte)note velocity:(Byte)velocity channel:(Byte)channel {

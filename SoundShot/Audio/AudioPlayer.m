@@ -17,6 +17,7 @@
 
 @end
 
+
 @implementation AudioPlayer
 
 - (instancetype)init {
@@ -129,10 +130,19 @@
 
     [playerNode stop]; 
     
+
+    if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayer:didStartPlayingSample:)]) {
+        [self.delegate audioPlayer:self didStartPlayingSample:sampleType];
+    }
+
     [playerNode scheduleBuffer:bufferToPlay
                         atTime:nil
                        options:AVAudioPlayerNodeBufferInterrupts
-             completionHandler:nil
+             completionHandler:^{
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayer:didFinishPlayingSample:)]) {
+                        [self.delegate audioPlayer:self didFinishPlayingSample:sampleType];
+                    }
+                }
     ];
     
     [playerNode play];

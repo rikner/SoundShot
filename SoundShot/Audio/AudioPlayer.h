@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AVFoundation/AVFoundation.h> // Ensure AVFoundation is imported
+#import <AVFoundation/AVFoundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -22,12 +22,19 @@ typedef NS_ENUM(NSInteger, SoundSampleType) {
     SoundSampleTypeCount // Keep this last for count if needed
 };
 
+// TODO: rename to SamplePlayer
+@class AudioPlayer; // Forward declaration
+
+@protocol AudioPlayerDelegate <NSObject>
+@optional
+- (void)audioPlayer:(AudioPlayer *)player didStartPlayingSample:(SoundSampleType)sampleType;
+- (void)audioPlayer:(AudioPlayer *)player didFinishPlayingSample:(SoundSampleType)sampleType;
+@end
+
 @interface AudioPlayer : NSObject
 
+@property (nonatomic, weak, nullable) id<AudioPlayerDelegate> delegate;
 - (instancetype)init;
-
-/// Plays the specified sound sample
-/// @param sampleType The type of sound sample to play.
 - (void)playSample:(SoundSampleType)sampleType;
 
 @end

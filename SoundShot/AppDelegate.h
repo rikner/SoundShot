@@ -9,12 +9,15 @@
 #import "SoundPadView.h"
 #import "MIDIReceiver.h"
 #import "AudioPlayer.h"
+#import "DeckView.h"
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, MIDIReceiverDelegate>
+// TODO: remove MIDIReceiverDelegate, AudioPlayerDelegate and rather use a view controller implementing these
+@interface AppDelegate : NSObject <NSApplicationDelegate, MIDIReceiverDelegate, AudioPlayerDelegate>
 
 @property (strong, nonatomic) NSWindow *window;
 @property (strong, nonatomic) MIDIReceiver *midiReceiver;
 @property (strong, nonatomic) AudioPlayer *audioPlayer;
+@property (strong, nonatomic) DeckView *deckView;
 
 @end
 
