@@ -24,16 +24,44 @@
     return self;
 }
 
+
 - (void)setupPadViews {
-    CGFloat viewWidth = self.frame.size.width;
-    CGFloat playerHeight = self.frame.size.height / SoundSampleTypeCount;
-    CGFloat currentY = 0;
-    
+    if (SoundSampleTypeCount == 0) {
+        return;
+    }
+
+    NSUInteger numberOfColumns = 3;
+    NSUInteger numberOfRows = (SoundSampleTypeCount + numberOfColumns - 1) / numberOfColumns;
+
+    CGFloat totalWidth = self.frame.size.width;
+    CGFloat totalHeight = self.frame.size.height;
+
+    // gap between pads
+    CGFloat gap = 8.0;
+    CGFloat cellWidth = totalWidth / numberOfColumns;
+    CGFloat cellHeight = totalHeight / numberOfRows;
+    CGFloat padWidth = cellWidth - gap;
+    CGFloat padHeight = cellHeight - gap;
+
     for (int i = 0; i < SoundSampleTypeCount; ++i) {
-        NSRect playerFrame = NSMakeRect(0, currentY, viewWidth, playerHeight);
-        SoundPadView *spv = [[SoundPadView alloc] initWithFrame:playerFrame];
+        NSUInteger column = i % numberOfColumns;
+        NSUInteger row = i / numberOfColumns;
+
+        // top-left corner of the cell
+        CGFloat cellX = column * cellWidth;
+        CGFloat cellY = totalHeight - ((row + 1) * cellHeight);
+
+        // inset the padFrame within its cell
+        CGFloat currentX = cellX + (gap / 2.0);
+        CGFloat currentY = cellY + (gap / 2.0);
+        
+        CGFloat actualPadWidth = MAX(0, padWidth);
+        CGFloat actualPadHeight = MAX(0, padHeight);
+
+        NSRect padFrame = NSMakeRect(currentX, currentY, actualPadWidth, actualPadHeight);
+        SoundPadView *spv = [[SoundPadView alloc] initWithFrame:padFrame];
+        
         [self addSubview:spv];
-        currentY += playerHeight;
         self.padViews[@(i)] = spv;
     }
 }
