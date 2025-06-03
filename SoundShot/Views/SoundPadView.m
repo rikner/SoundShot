@@ -28,26 +28,22 @@
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
     
-    // Draw background
     [_currentBackgroundColor set];
     NSRectFill(self.bounds);
     
-    // Draw border
     [[NSColor appLavenderWebColor] set];
     NSFrameRect(NSInsetRect(self.bounds, 1.0, 1.0));
     
-    // Draw the label if available
     if (_label && ![_label isEqualToString:@""]) {
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         [paragraphStyle setAlignment:NSTextAlignmentCenter];
         
         NSDictionary *attributes = @{
-            NSFontAttributeName: [NSFont systemFontOfSize:12],
-            NSForegroundColorAttributeName: [NSColor appBlueMunsellColor],
+            NSFontAttributeName: [NSFont monospacedSystemFontOfSize:12 weight:NSFontWeightBold],
+            NSForegroundColorAttributeName: [NSColor appLavenderWebColor],
             NSParagraphStyleAttributeName: paragraphStyle
         };
         
-        // Calculate text position to center it
         NSSize textSize = [_label sizeWithAttributes:attributes];
         NSPoint textPoint = NSMakePoint(
             (self.bounds.size.width - textSize.width) / 2,
@@ -62,13 +58,10 @@
     if (_isPlaying != isPlaying) {
         _isPlaying = isPlaying;
         
-        // Directly update the background color
         _currentBackgroundColor = isPlaying ? self.playingBackgroundColor : self.idleBackgroundColor;
         
-        // Schedule redraw
         [self setNeedsDisplay:YES];
         
-        // You can add a simple animation using NSAnimationContext if desired
         [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
             context.duration = 0.1;
             [self.animator setAlphaValue:0.8];

@@ -28,7 +28,7 @@
         _playerNodes = [NSMutableDictionary dictionary];
         _soundBuffers = [NSMutableDictionary dictionary];
 
-        [self loadSoundFiles]; // load buffers first
+        [self loadSoundFiles];
         [self setupAudioEngine];
 
         NSError *error = nil;
@@ -94,23 +94,24 @@
 
         NSURL *soundURL = [[NSBundle mainBundle] URLForResource:fileName withExtension:fileExtension];
         
-        if (soundURL) {
-            NSError *error = nil;
-            AVAudioFile *audioFile = [[AVAudioFile alloc] initForReading:soundURL error:&error];
-            if (audioFile) {
-                AVAudioPCMBuffer *buffer = [[AVAudioPCMBuffer alloc] initWithPCMFormat:audioFile.processingFormat
-                                                                         frameCapacity:(AVAudioFrameCount)audioFile.length];
-                if ([audioFile readIntoBuffer:buffer error:&error]) {
-                    self.soundBuffers[@(sampleType)] = buffer;
-                    NSLog(@"Loaded buffer for %@", fileNameWithExtension);
-                } else {
-                    NSLog(@"Error reading audio file %@ into buffer: %@", fileNameWithExtension, error.localizedDescription);
-                }
-            } else {
-                NSLog(@"Error creating AVAudioFile for %@: %@", fileNameWithExtension, error.localizedDescription);
-            }
+        if (!soundURL) {
+            return NSLog(@"Could not find sound file: %@ in Samples directory", fileNameWithExtension);
+        }
+        
+        NSError *error = nil;
+
+        AVAudioFile *audioFile = [[AVAudioFile alloc] initForReading:soundURL error:&error];
+        if (error != nil) {
+            return NSLog(@"Error creating AVAudioFile for %@: %@", fileNameWithExtension, error.localizedDescription);
+        }
+
+        AVAudioPCMBuffer *buffer = [[AVAudioPCMBuffer alloc] initWithPCMFormat:audioFile.processingFormat
+                                                                 frameCapacity:(AVAudioFrameCount)audioFile.length];
+        if ([audioFile readIntoBuffer:buffer error:&error]) {
+            self.soundBuffers[@(sampleType)] = buffer;
+            NSLog(@"Loaded buffer for %@", fileNameWithExtension);
         } else {
-            NSLog(@"Could not find sound file: %@ in Samples directory", fileNameWithExtension);
+            NSLog(@"Error reading audio file %@ into buffer: %@", fileNameWithExtension, error.localizedDescription);
         }
     }
 }
