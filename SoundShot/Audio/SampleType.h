@@ -7,21 +7,20 @@
 
 #import <Foundation/Foundation.h>
 
-// Enum to identify the different sound samples
 typedef NS_ENUM(NSInteger, SampleType) {
+    SoundSampleTypeKick,
     SoundSampleTypeClap,
-    SoundSampleTypeFlyingNoise,
-    SoundSampleTypeGameOver,
+    SoundSampleTypeSnare,
     SoundSampleTypeHiHatClosed,
     SoundSampleTypeHiHatOpen,
-    SoundSampleTypeKick,
-    SoundSampleTypeSnare,
-    SoundSampleTypeCount // Keep this last for count if needed
+    SoundSampleTypeFlyingNoise,
+    SoundSampleTypeGameOver,
+    SoundSampleTypeCount
 };
-
 
 @interface SampleTypeUtils : NSObject
 
 + (NSString *)descriptionForType:(SampleType)type;
++ (NSString *)filenameForType:(SampleType)type;
 
 @end

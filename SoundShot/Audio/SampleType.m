@@ -30,4 +30,17 @@
     }
 }
 
++ (NSString *)filenameForType:(SampleType)type {
+    switch (type) {
+        case SoundSampleTypeKick: return @"kick.mp3";
+        case SoundSampleTypeClap: return @"clap.mp3";
+        case SoundSampleTypeSnare: return @"snare.mp3";
+        case SoundSampleTypeHiHatClosed: return @"hihat_closed.mp3";
+        case SoundSampleTypeHiHatOpen: return @"hihat_open.mp3";
+        case SoundSampleTypeFlyingNoise: return @"flying_noise.mp3";
+        case SoundSampleTypeGameOver: return @"game_over.mp3";
+        default: return nil;
+    }
+}
+
 @end

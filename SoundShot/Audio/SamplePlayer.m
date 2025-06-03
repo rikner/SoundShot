@@ -61,58 +61,39 @@
 }
 
 - (void)loadSoundFiles {
-    NSArray<NSString *> *fileNames = @[
-        @"kick.mp3",
-        @"clap.mp3",
-        @"snare.mp3",
-        @"hihat_closed.mp3",
-        @"hihat_open.mp3",
-        @"flying_noise.mp3",
-        @"game_over.mp3"
-    ];
 
-    NSArray<NSNumber *> *soundTypes = @[
-        @(SoundSampleTypeKick),
-        @(SoundSampleTypeClap),
-        @(SoundSampleTypeSnare),
-        @(SoundSampleTypeHiHatClosed),
-        @(SoundSampleTypeHiHatOpen),
-        @(SoundSampleTypeFlyingNoise),
-        @(SoundSampleTypeGameOver),
-    ];
+    for (NSUInteger i = 0; i < SoundSampleTypeCount; i++) {
+        SampleType sampleType = (SampleType)i;
+        NSString *filenameWithExt = [SampleTypeUtils filenameForType:sampleType];
 
-    if (fileNames.count != soundTypes.count) {
-        NSLog(@"Error: Mismatch between fileNames and soundTypes count.");
-        return;
-    }
-
-    for (NSUInteger i = 0; i < fileNames.count; i++) {
-        NSString *fileNameWithExtension = fileNames[i];
-        SampleType sampleType = [soundTypes[i] integerValue];
+        if (!filenameWithExt) {
+            NSLog(@"No filename defined for sample type %d", i);
+            continue;
+        }
         
-        NSString *fileName = [fileNameWithExtension stringByDeletingPathExtension];
-        NSString *fileExtension = [fileNameWithExtension pathExtension];
+        NSString *fileName = [filenameWithExt stringByDeletingPathExtension];
+        NSString *fileExtension = [filenameWithExt pathExtension];
 
         NSURL *soundURL = [[NSBundle mainBundle] URLForResource:fileName withExtension:fileExtension];
         
         if (!soundURL) {
-            return NSLog(@"Could not find sound file: %@ in Samples directory", fileNameWithExtension);
+            return NSLog(@"Could not find sound file: %@ in Samples directory", filenameWithExt);
         }
         
         NSError *error = nil;
 
         AVAudioFile *audioFile = [[AVAudioFile alloc] initForReading:soundURL error:&error];
         if (error != nil) {
-            return NSLog(@"Error creating AVAudioFile for %@: %@", fileNameWithExtension, error.localizedDescription);
+            return NSLog(@"Error creating AVAudioFile for %@: %@", filenameWithExt, error.localizedDescription);
         }
 
         AVAudioPCMBuffer *buffer = [[AVAudioPCMBuffer alloc] initWithPCMFormat:audioFile.processingFormat
                                                                  frameCapacity:(AVAudioFrameCount)audioFile.length];
         if ([audioFile readIntoBuffer:buffer error:&error]) {
             self.soundBuffers[@(sampleType)] = buffer;
-            NSLog(@"Loaded buffer for %@", fileNameWithExtension);
+            NSLog(@"Loaded buffer for %@", filenameWithExt);
         } else {
-            NSLog(@"Error reading audio file %@ into buffer: %@", fileNameWithExtension, error.localizedDescription);
+            NSLog(@"Error reading audio file %@ into buffer: %@", filenameWithExt, error.localizedDescription);
         }
     }
 }
@@ -148,10 +129,6 @@
     ];
     
     [playerNode play];
-}
-
-- (void) finishedPlaying {
-    
 }
 
 - (void)dealloc {
