@@ -10,7 +10,6 @@
 
 @implementation MainViewController
 
-
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super init];
     if (self) {
@@ -84,7 +83,6 @@
         [self.samplePlayer play:sampleToPlay];
     }
 }
-
 
 
 #pragma mark - DeckViewDelegate

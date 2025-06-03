@@ -125,7 +125,7 @@ NSMutableSet<NSNumber *> *connectedSources;
 
 - (void)dealloc {
     NSLog(@"Deallocating MIDIReceiver");
-    [self stopListening]; // Ensure sources are disconnected
+    [self stopListening];
 
     if (inputPort != 0) {
         MIDIPortDispose(inputPort);

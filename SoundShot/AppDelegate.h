@@ -8,7 +8,6 @@
 #import <Cocoa/Cocoa.h>
 #import "MainViewController.h"
 
-// TODO: remove MIDIReceiverDelegate, AudioPlayerDelegate and rather use a view controller implementing these
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
 @property (strong, nonatomic) NSWindow *window;
