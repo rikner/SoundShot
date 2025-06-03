@@ -7,36 +7,28 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import "SampleType.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Enum to identify the different sound samples
-typedef NS_ENUM(NSInteger, SoundSampleType) {
-    SoundSampleTypeClap,
-    SoundSampleTypeFlyingNoise,
-    SoundSampleTypeGameOver,
-    SoundSampleTypeHiHatClosed,
-    SoundSampleTypeHiHatOpen,
-    SoundSampleTypeKick,
-    SoundSampleTypeSnare,
-    SoundSampleTypeCount // Keep this last for count if needed
-};
 
 @class SamplePlayer;
 @protocol SamplePlayerDelegate <NSObject>
+
 @optional
-- (void)samplePlayer:(SamplePlayer *)player didStartPlayingSample:(SoundSampleType)sampleType;
-- (void)samplePlayer:(SamplePlayer *)player didFinishPlayingSample:(SoundSampleType)sampleType;
+- (void)samplePlayer:(SamplePlayer *)player didStartPlayingSample:(SampleType)sampleType;
+- (void)samplePlayer:(SamplePlayer *)player didFinishPlayingSample:(SampleType)sampleType;
+
 @end
+
 
 @interface SamplePlayer : NSObject
 
 @property (nonatomic, weak, nullable) id<SamplePlayerDelegate> delegate;
 - (instancetype)init;
-- (void)play:(SoundSampleType)sampleType;
+- (void)play:(SampleType)sampleType;
 
 @end
-
 
 
 

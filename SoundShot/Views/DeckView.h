@@ -9,5 +9,5 @@
 #import "SamplePlayer.h"
 
 @interface DeckView : NSView
-- (void) update:(SoundSampleType)sampleType isPlaying:(BOOL) isPlaying;
+- (void) update:(SampleType)sampleType isPlaying:(BOOL) isPlaying;
 @end

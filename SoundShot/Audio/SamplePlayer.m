@@ -46,7 +46,7 @@
 
     // Create a dedicated player node for each sound type
     for (int i = 0; i < SoundSampleTypeCount; ++i) {
-        SoundSampleType sampleType = (SoundSampleType)i;
+        SampleType sampleType = (SampleType)i;
         AVAudioPlayerNode *playerNode = [[AVAudioPlayerNode alloc] init];
         [self.engine attachNode:playerNode];
         
@@ -61,23 +61,23 @@
 
 - (void)loadSoundFiles {
     NSArray<NSString *> *fileNames = @[
+        @"kick.mp3",
         @"clap.mp3",
-        @"flying_noise.mp3",
-        @"game_over.mp3",
+        @"snare.mp3",
         @"hihat_closed.mp3",
         @"hihat_open.mp3",
-        @"kick.mp3",
-        @"snare.mp3"
+        @"flying_noise.mp3",
+        @"game_over.mp3"
     ];
 
     NSArray<NSNumber *> *soundTypes = @[
+        @(SoundSampleTypeKick),
         @(SoundSampleTypeClap),
-        @(SoundSampleTypeFlyingNoise),
-        @(SoundSampleTypeGameOver),
+        @(SoundSampleTypeSnare),
         @(SoundSampleTypeHiHatClosed),
         @(SoundSampleTypeHiHatOpen),
-        @(SoundSampleTypeKick),
-        @(SoundSampleTypeSnare)
+        @(SoundSampleTypeFlyingNoise),
+        @(SoundSampleTypeGameOver),
     ];
 
     if (fileNames.count != soundTypes.count) {
@@ -87,7 +87,7 @@
 
     for (NSUInteger i = 0; i < fileNames.count; i++) {
         NSString *fileNameWithExtension = fileNames[i];
-        SoundSampleType sampleType = [soundTypes[i] integerValue];
+        SampleType sampleType = [soundTypes[i] integerValue];
         
         NSString *fileName = [fileNameWithExtension stringByDeletingPathExtension];
         NSString *fileExtension = [fileNameWithExtension pathExtension];
@@ -115,7 +115,7 @@
     }
 }
 
-- (void)play:(SoundSampleType)sampleType {
+- (void)play:(SampleType)sampleType {
     AVAudioPCMBuffer *bufferToPlay = self.soundBuffers[@(sampleType)];
     if (!bufferToPlay) {
         NSLog(@"AudioPlayer: Sound buffer not found for type %ld", (long)sampleType);
@@ -159,3 +159,4 @@
 }
 
 @end
+

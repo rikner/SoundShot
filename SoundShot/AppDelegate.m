@@ -44,13 +44,13 @@
     // Insert code here to tear down your application
 }
 
-- (void)samplePlayer:(SamplePlayer *)player didStartPlayingSample:(SoundSampleType)sampleType {
+- (void)samplePlayer:(SamplePlayer *)player didStartPlayingSample:(SampleType)sampleType {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.deckView update:sampleType isPlaying: YES];
     });
 }
 
-- (void)samplePlayer:(SamplePlayer *)player didFinishPlayingSample:(SoundSampleType)sampleType {
+- (void)samplePlayer:(SamplePlayer *)player didFinishPlayingSample:(SampleType)sampleType {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.deckView update:sampleType isPlaying: NO];
     });
@@ -62,7 +62,7 @@
     }
 
 int noteInOctave = note % 12;
-    SoundSampleType sampleToPlay = -1;
+    SampleType sampleToPlay = -1;
 
     switch (noteInOctave) {
         case 0:  // C

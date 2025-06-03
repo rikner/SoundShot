@@ -59,14 +59,16 @@
         CGFloat actualPadHeight = MAX(0, padHeight);
 
         NSRect padFrame = NSMakeRect(currentX, currentY, actualPadWidth, actualPadHeight);
-        SoundPadView *spv = [[SoundPadView alloc] initWithFrame:padFrame];
+        
+        NSString *label = [SampleTypeUtils descriptionForType:i];
+        SoundPadView *spv = [[SoundPadView alloc] initWithFrame:padFrame label:label];
         
         [self addSubview:spv];
         self.padViews[@(i)] = spv;
     }
 }
 
-- (void)update:(SoundSampleType)sampleType isPlaying:(BOOL)isPlaying {
+- (void)update:(SampleType)sampleType isPlaying:(BOOL)isPlaying {
     [self.padViews[@(sampleType)] setIsPlaying:isPlaying];
 }
 
