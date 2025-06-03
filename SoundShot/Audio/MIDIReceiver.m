@@ -97,7 +97,7 @@ NSMutableSet<NSNumber *> *connectedSources;
             MIDIUniqueID uniqueID = 0;
             OSStatus idStatus = MIDIObjectGetIntegerProperty(source, kMIDIPropertyUniqueID, &uniqueID);
             if (idStatus != noErr) {
-                uniqueID = i; // index as a fallback
+                uniqueID = (MIDIUniqueID)i;
             }
             
             if (![connectedSources containsObject:@(uniqueID)]) {

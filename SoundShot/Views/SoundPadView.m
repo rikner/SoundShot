@@ -70,4 +70,23 @@
     }
 }
 
+- (void)mouseDown:(NSEvent *)event {
+    // Visual feedback when clicked
+    _currentBackgroundColor = [NSColor appVermilionColor];
+    [self setNeedsDisplay:YES];
+    
+    // Notify delegate
+    if ([self.delegate respondsToSelector:@selector(soundPadViewWasClicked:)]) {
+        [self.delegate soundPadViewWasClicked:self];
+    }
+}
+
+- (void)mouseUp:(NSEvent *)event {
+    // Reset color if not currently playing
+    if (!_isPlaying) {
+        _currentBackgroundColor = self.idleBackgroundColor;
+        [self setNeedsDisplay:YES];
+    }
+}
+
 @end

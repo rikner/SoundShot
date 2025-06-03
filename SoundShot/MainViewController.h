@@ -10,7 +10,7 @@
 #import "SamplePlayer.h"
 #import "DeckView.h"
 
-@interface MainViewController : NSViewController <MIDIReceiverDelegate, SamplePlayerDelegate>
+@interface MainViewController : NSViewController <MIDIReceiverDelegate, SamplePlayerDelegate, DeckViewDelegate>
 
 @property (strong, nonatomic) MIDIReceiver *midiReceiver;
 @property (strong, nonatomic) SamplePlayer *samplePlayer;

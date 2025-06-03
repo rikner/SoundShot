@@ -10,12 +10,14 @@
 
 @implementation MainViewController
 
+
 - (instancetype)initWithFrame:(NSRect)frame {
     self = [super init];
     if (self) {
         self.view = [[NSView alloc] initWithFrame:frame];
         
         self.deckView = [[DeckView alloc] initWithFrame:frame];
+        self.deckView.delegate = self; // Set the delegate
         [self.view addSubview:self.deckView];
         
         self.samplePlayer = [[SamplePlayer alloc] init];
@@ -80,6 +82,16 @@
 
     if (sampleToPlay >= 0 && sampleToPlay < SoundSampleTypeCount) {
         [self.samplePlayer play:sampleToPlay];
+    }
+}
+
+
+
+#pragma mark - DeckViewDelegate
+
+- (void)deckView:(DeckView *)deckView didClickPadForSampleType:(SampleType)sampleType {
+    if (sampleType >= 0 && sampleType < SoundSampleTypeCount) {
+        [self.samplePlayer play:sampleType];
     }
 }
 

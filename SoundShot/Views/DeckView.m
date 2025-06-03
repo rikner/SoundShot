@@ -62,6 +62,7 @@
         
         NSString *label = [SampleTypeUtils descriptionForType:i];
         SoundPadView *spv = [[SoundPadView alloc] initWithFrame:padFrame label:label];
+        spv.delegate = self;
         
         [self addSubview:spv];
         self.padViews[@(i)] = spv;
@@ -70,6 +71,21 @@
 
 - (void)update:(SampleType)sampleType isPlaying:(BOOL)isPlaying {
     [self.padViews[@(sampleType)] setIsPlaying:isPlaying];
+}
+
+#pragma mark - SoundPadViewDelegate
+
+- (void)soundPadViewWasClicked:(SoundPadView *)soundPadView {
+    // Find which sample type corresponds to this view
+    for (SampleType type = 0; type < SoundSampleTypeCount; type++) {
+        if (soundPadView == self.padViews[@(type)]) {
+            // Forward the event to the main controller
+            if ([self.delegate respondsToSelector:@selector(deckView:didClickPadForSampleType:)]) {
+                [self.delegate deckView:self didClickPadForSampleType:type];
+            }
+            break;
+        }
+    }
 }
 
 @end
