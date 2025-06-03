@@ -7,12 +7,10 @@
 
 #import "MIDIReceiver.h"
 
-// C-style callback function for CoreMIDI
-static void MIDIInputCallback(const MIDIPacketList *packetList, void *readProcRefCon, void *srcConnRefCon);
-
 @interface MIDIReceiver () {
-    MIDIClientRef midiClient;
-    MIDIPortRef inputPort;
+MIDIClientRef midiClient;
+MIDIPortRef inputPort;
+NSMutableSet<NSNumber *> *connectedSources;
 }
 @end
 
@@ -21,13 +19,22 @@ static void MIDIInputCallback(const MIDIPacketList *packetList, void *readProcRe
 - (instancetype)init {
     self = [super init];
     if (self) {
-        OSStatus clientStatus = MIDIClientCreate(CFSTR("SoundShot MIDI Client"), NULL, NULL, &midiClient);
+        self->connectedSources = [NSMutableSet new];
+
+        OSStatus clientStatus = MIDIClientCreate(CFSTR("SoundShot MIDI Client"), 
+                                                MIDINotificationCallback, 
+                                                (__bridge void *)self, 
+                                                &midiClient);
         if (clientStatus != noErr) {
             NSLog(@"Error creating MIDI client: %d", clientStatus);
             return nil;
         }
 
-        OSStatus portStatus = MIDIInputPortCreate(midiClient, CFSTR("SoundShot Input Port"), MIDIInputCallback, (__bridge void *)self, &inputPort);
+        OSStatus portStatus = MIDIInputPortCreate(midiClient, 
+                                                 CFSTR("SoundShot Input Port"), 
+                                                 MIDIInputCallback, 
+                                                 (__bridge void *)self, 
+                                                 &inputPort);
         if (portStatus != noErr) {
             NSLog(@"Error creating MIDI input port: %d", portStatus);
             MIDIClientDispose(midiClient);
@@ -38,23 +45,7 @@ static void MIDIInputCallback(const MIDIPacketList *packetList, void *readProcRe
 }
 
 - (void)startListening {
-    ItemCount sourceCount = MIDIGetNumberOfSources();
-    NSLog(@"Found %lu MIDI sources.", sourceCount);
-
-    for (ItemCount i = 0; i < sourceCount; ++i) {
-        MIDIEndpointRef source = MIDIGetSource(i);
-        if (source != 0) {
-            OSStatus portConnectStatus = MIDIPortConnectSource(inputPort, source, NULL);
-            if (portConnectStatus == noErr) {
-                CFStringRef endpointName = NULL;
-                MIDIObjectGetStringProperty(source, kMIDIPropertyName, &endpointName);
-                NSLog(@"Connected to MIDI source: %@", (__bridge NSString *)endpointName);
-                if (endpointName) CFRelease(endpointName);
-            } else {
-                NSLog(@"Error connecting to MIDI source %lu: %d", i, portConnectStatus);
-            }
-        }
-    }
+    [self connectToNewSources];
 }
 
 - (void)stopListening {
@@ -72,6 +63,8 @@ static void MIDIInputCallback(const MIDIPacketList *packetList, void *readProcRe
             }
         }
     }
+
+    [connectedSources removeAllObjects];
     // Note: MIDIClientDispose and MIDIPortDispose should be called in dealloc
 }
 
@@ -94,6 +87,41 @@ static void MIDIInputCallback(const MIDIPacketList *packetList, void *readProcRe
     return [sourceNames copy];
 }
 
+- (void)connectToNewSources {
+    ItemCount sourceCount = MIDIGetNumberOfSources();
+    
+    for (ItemCount i = 0; i < sourceCount; ++i) {
+        MIDIEndpointRef source = MIDIGetSource(i);
+        if (source != 0) {
+            // Get a unique ID for this source to track connections
+            MIDIUniqueID uniqueID = 0;
+            OSStatus idStatus = MIDIObjectGetIntegerProperty(source, kMIDIPropertyUniqueID, &uniqueID);
+            if (idStatus != noErr) {
+                uniqueID = i; // index as a fallback
+            }
+            
+            if (![connectedSources containsObject:@(uniqueID)]) {
+                OSStatus portConnectStatus = MIDIPortConnectSource(inputPort, source, NULL);
+                if (portConnectStatus == noErr) {
+                    [connectedSources addObject:@(uniqueID)];
+                    
+                    CFStringRef endpointName = NULL;
+                    MIDIObjectGetStringProperty(source, kMIDIPropertyName, &endpointName);
+                    NSLog(@"Connected to new MIDI source: %@", (__bridge NSString *)endpointName);
+                    
+                    // Notify delegate about new device if needed
+                    if ([self.delegate respondsToSelector:@selector(midiReceiver:didConnectToSource:)]) {
+                        [self.delegate midiReceiver:self didConnectToSource:(__bridge NSString *)endpointName];
+                    }
+                    
+                    if (endpointName) CFRelease(endpointName);
+                } else {
+                    NSLog(@"Error connecting to MIDI source %lu: %d", i, portConnectStatus);
+                }
+            }
+        }
+    }
+}
 
 - (void)dealloc {
     NSLog(@"Deallocating MIDIReceiver");
@@ -108,6 +136,7 @@ static void MIDIInputCallback(const MIDIPacketList *packetList, void *readProcRe
         midiClient = 0;
     }
 }
+
 
 // MIDI Input Callback Function (C function)
 static void MIDIInputCallback(const MIDIPacketList *packetList, void *readProcRefCon, void *srcConnRefCon) {
@@ -170,5 +199,27 @@ static void MIDIInputCallback(const MIDIPacketList *packetList, void *readProcRe
         packet = MIDIPacketNext(packet);
     }
 }
+
+
+static void MIDINotificationCallback(const MIDINotification *message, void *refCon) {
+    MIDIReceiver *receiver = (__bridge MIDIReceiver *)refCon;
+    
+    switch(message->messageID) {
+        case kMIDIMsgObjectAdded:
+            if (((MIDIObjectAddRemoveNotification *)message)->childType == kMIDIObjectType_Source) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [receiver connectToNewSources];
+                });
+            }
+            break;
+            
+        case kMIDIMsgObjectRemoved:
+            break;
+            
+        default:
+            break;
+    }
+}
+
 
 @end

@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)midiReceiver:(MIDIReceiver *)receiver didReceiveNoteOn:(Byte)note velocity:(Byte)velocity channel:(Byte)channel;
 - (void)midiReceiver:(MIDIReceiver *)receiver didReceiveNoteOff:(Byte)note velocity:(Byte)velocity channel:(Byte)channel;
 - (void)midiReceiver:(MIDIReceiver *)receiver didReceiveControlChange:(Byte)controller value:(Byte)value channel:(Byte)channel;
+- (void)midiReceiver:(MIDIReceiver *)receiver didConnectToSource:(NSString *)sourceName;
 @end
 
 @interface MIDIReceiver : NSObject
@@ -26,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startListening;
 - (void)stopListening;
 - (NSArray<NSString *> *)availableMIDISources;
-
+- (void)connectToNewSources;
 @end
 
 NS_ASSUME_NONNULL_END
